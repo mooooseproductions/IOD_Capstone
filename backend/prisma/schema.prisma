@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  handle           String       @unique
+  name             String
+  password         String
+  accountCreatedAt DateTime     @default(now())
+  accountClosedAt  DateTime?
+  brews            BrewRecord[]
+}
+
+model BrewRecord {
+  id              Int               @id @default(autoincrement())
+  name            String
+  status          String            @default("planning")
+  style           String?
+  dateStarted     DateTime          @default(now())
+  dateFinished    DateTime?
+  originalGravity Decimal?
+  finalGravity    Decimal?
+  batchSize       Decimal
+  userId          Int
+  ingredients     BrewIngredients[]
+  notes           BrewNotes[]
+  user            User              @relation(fields: [userId], references: [id])
+}
+
+model BrewIngredients {
+  id           Int        @id @default(autoincrement())
+  amount       Decimal
+  unit         String
+  brewId       Int
+  ingredientId Int
+  brew         BrewRecord @relation(fields: [brewId], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+}
+
+model BrewNotes {
+  id          Int        @id @default(autoincrement())
+  dateCreated DateTime   @default(now())
+  dateUpdated DateTime?
+  content     String
+  brewId      Int
+  brew        BrewRecord @relation(fields: [brewId], references: [id])
+}
+
+model Ingredient {
+  id              Int               @id @default(autoincrement())
+  type            String
+  name            String            @unique
+  brewIngredients BrewIngredients[]
+}

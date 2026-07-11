@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,7 +15,7 @@ model User {
   password         String
   accountCreatedAt DateTime     @default(now())
   accountClosedAt  DateTime?
-  brews            BrewRecord[]
+  brew             BrewRecord[]
 }
 
 model BrewRecord {
@@ -35,12 +29,12 @@ model BrewRecord {
   finalGravity    Decimal?
   batchSize       Decimal
   userId          Int
-  ingredients     BrewIngredients[]
-  notes           BrewNotes[]
+  ingredient      BrewIngredient[]
+  note            BrewNote[]
   user            User              @relation(fields: [userId], references: [id])
 }
 
-model BrewIngredients {
+model BrewIngredient {
   id           Int        @id @default(autoincrement())
   amount       Decimal
   unit         String
@@ -50,7 +44,7 @@ model BrewIngredients {
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
 }
 
-model BrewNotes {
+model BrewNote {
   id          Int        @id @default(autoincrement())
   dateCreated DateTime   @default(now())
   dateUpdated DateTime?
@@ -63,5 +57,5 @@ model Ingredient {
   id              Int               @id @default(autoincrement())
   type            String
   name            String            @unique
-  brewIngredients BrewIngredients[]
+  brewIngredient  BrewIngredient[]
 }

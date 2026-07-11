@@ -13,6 +13,8 @@ model User {
   handle           String       @unique
   name             String
   password         String
+  status           String       @default("active")
+  role             String       @default("user")
   accountCreatedAt DateTime     @default(now())
   accountClosedAt  DateTime?
   brew             BrewRecord[]

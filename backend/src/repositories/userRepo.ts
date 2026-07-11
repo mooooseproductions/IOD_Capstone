@@ -38,7 +38,35 @@ export class UserRepo {
                 ...(update.handle !== undefined && { handle: update.handle }),
                 ...(update.name !== undefined && { name: update.name }),
                 ...(update.password !== undefined && { password: update.password }),
+                ...(update.status !== undefined && { status: update.status}),
+                ...(update.role !== undefined && { role: update.role})
             }
         });
     }
+
+    static async getUserDetails(id: number) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        });
+        return user;
+    }
+
+    static async getAllUsers(status?: string) {
+        const users = await prisma.user.findMany({
+            where: status ? { status } : {}
+        });
+        return users;
+    }
+
+    static async removeUser(id: number) {
+        await prisma.user.delete({
+            where: {
+                id
+            }
+        });
+        return true;
+    }
+
 }

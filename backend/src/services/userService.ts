@@ -30,7 +30,7 @@ export class UserService {
         return await UserRepo.registerUser(user, encryptPassword);
     }
 
-    static async updateUser(update: any) {
+    static async updateUser(update: any) { // needs role check to change status or role
         if(update.email) {
             throw new Error("Account email cannot be changed")
         }
@@ -51,9 +51,23 @@ export class UserService {
         const updateData = {
             name: update.name || undefined,
             handle: update.handle || undefined,
-            password: newPassword || undefined
+            password: newPassword || undefined,
+            status: update.status || undefined,
+            role: update.role || undefined
         }
 
         return await UserRepo.updateUser(update.id, updateData);
+    }
+
+    static async getUserDetails(id: number) {
+        return await UserRepo.getUserDetails(id);
+    }
+
+    static async getAllUsers(status?: string) {
+        return await UserRepo.getAllUsers(status || undefined);
+    }
+
+    static async removeUser(id: number) {
+        return await UserRepo.removeUser(id);
     }
 }

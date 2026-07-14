@@ -1,89 +1,137 @@
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
-import { useDispatch } from 'react-redux';
-import { useState } from 'react';
-import api from '../api/connection';
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    registerUser,
+    setFormField,
+    setValidationErrors,
+    clearValidationErrors,
+} from "../features/registrationSlice";
+import { userRegistrationSchema } from "../validation/registrationSchema";
 
-function RegisterPage() {
+function RegistrationPage() {
     const dispatch = useDispatch();
 
-    const [user, setUser] = useState({
-        name: "",
-        handle: "",
-        email: "",
-        passowrd: ""
-    });
+    const { formData, errors, message, status } = useSelector(
+        (state) => state.registration
+    );
 
-    const handleChange = (e) => {
-        setUser({
-            ...user,
-            [e.target.name]: e.target.value
-        });
+    const submitting = status === "loading";
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
+        dispatch(
+            setFormField({
+                field: name,
+                value,
+            })
+        );
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleRegister = (event) => {
+        event.preventDefault();
 
-        try {
-            const response = await api.post("/user/register");
-            console.log(response.data);
-        } catch (error) {
-            console.error(error);
+        dispatch(clearValidationErrors());
+
+        const result = userRegistrationSchema.safeParse(formData);
+
+        if (!result.success) {
+            const validationErrors = {};
+
+            result.error.issues.forEach((issue) => {
+                const fieldName = issue.path[0];
+
+                if (!validationErrors[fieldName]) {
+                    validationErrors[fieldName] = issue.message;
+                }
+            });
+
+            dispatch(setValidationErrors(validationErrors));
+            return;
         }
+
+        dispatch(registerUser(result.data));
     };
 
     return (
-        <>
-            <Form onSubmit={handleSubmit}>
-                <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Text id="inputGroup-sizing-sm">Name</InputGroup.Text>
+        <Form onSubmit={handleRegister}>
+            {message && (
+                <Alert variant={status === "failed" ? "danger" : "success"}>
+                    {message}
+                </Alert>
+            )}
 
-                    <Form.Control
-                        name="name"
-                        value={user.name}
-                        onChange={handleChange}
-                        aria-describedby="inputGroup-sizing-sm"
+            <Form.Group className="mb-3">
+                <Form.Label>Name</Form.Label>
 
-                    />
-                </InputGroup>
+                <Form.Control
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    isInvalid={Boolean(errors.name)}
+                />
 
-                <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Text id="inputGroup-sizing-sm">Handle</InputGroup.Text>
-                    <Form.Control
-                        name="handle"
-                        value={user.handle}
-                        onChange={handleChange}
-                        aria-describedby="inputGroup-sizing-sm"
-                    />
-                </InputGroup>
+                <Form.Control.Feedback type="invalid">
+                    {errors.name}
+                </Form.Control.Feedback>
+            </Form.Group>
 
-                <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Text id="inputGroup-sizing-sm">Email</InputGroup.Text>
-                    <Form.Control
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        aria-describedby="inputGroup-sizing-sm"
-                    />
-                </InputGroup>
+            <Form.Group className="mb-3">
+                <Form.Label>Handle</Form.Label>
 
-                <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Text id="inputGroup-sizing-sm">Password</InputGroup.Text>
-                    <Form.Control
-                        name="password"
-                        type="password"
-                        value={user.password}
-                        onChange={handleChange}
-                        aria-describedby="inputGroup-sizing-sm"
-                    />
-                </InputGroup>
+                <Form.Control
+                    type="text"
+                    name="handle"
+                    value={formData.handle}
+                    onChange={handleChange}
+                    isInvalid={Boolean(errors.handle)}
+                />
 
-                <Button variant="primary" type="submit">Submit</Button>
-            </Form>
+                <Form.Control.Feedback type="invalid">
+                    {errors.handle}
+                </Form.Control.Feedback>
+            </Form.Group>
 
-        </>
+            <Form.Group className="mb-3">
+                <Form.Label>Email</Form.Label>
+
+                <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    isInvalid={Boolean(errors.email)}
+                />
+
+                <Form.Control.Feedback type="invalid">
+                    {errors.email}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+
+                <Form.Control
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    isInvalid={Boolean(errors.password)}
+                />
+
+                <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+            <Button type="submit" disabled={submitting}>
+                {submitting ? "Registering..." : "Register"}
+            </Button>
+        </Form>
     );
 }
 
-export default RegisterPage;
+export default RegistrationPage;

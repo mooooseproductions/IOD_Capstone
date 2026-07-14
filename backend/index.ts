@@ -1,11 +1,20 @@
 import express from 'express';
 import cors from 'cors';
 import userRoute from './src/routes/userRoute';
+import brewRoute from './src/routes/brewRoutes';
+import authRoute from './src/routes/authRoutes';
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -15,6 +24,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userRoute);
+app.use("/api/brew", brewRoute);
+app.use("/api/auth", authRoute);
 
 const PORT = 3000;
 

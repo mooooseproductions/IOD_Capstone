@@ -9,10 +9,6 @@ export class UserService {
         email: string;
         password: string;
     }) {
-        // check mandatory fields completed
-        if (!user.name || !user.handle || !user.email || !user.password) {
-            throw new Error("Mandatory Fields Incomplete")
-        };
 
         // check for existing record
         const existingEmail = await UserRepo.checkEmailExists(user.email)
@@ -20,7 +16,7 @@ export class UserService {
             throw new Error("User email already exists")
         };
 
-        const existingHandle = await UserRepo.checkHandleExists(user.email)
+        const existingHandle = await UserRepo.checkHandleExists(user.handle)
         if (existingHandle) {
             throw new Error("User handle already taken")
         };
@@ -30,9 +26,18 @@ export class UserService {
         return await UserRepo.registerUser(user, encryptPassword);
     }
 
-    static async updateUser(update: any) { // needs role check to change status or role
-        if(update.email) {
-            throw new Error("Account email cannot be changed")
+    static async updateUser(update: any, credentials: any) { // needs role check to change status or role
+
+        if (credentials.role !== "admin" && update.email) {
+            throw new Error("Please contact administrator to change email")
+        }
+
+        if (credentials.role !== "admin" && update.role) {
+            throw new Error("User privileges cannot update role")
+        }
+
+         if (credentials.role !== "admin" && update.status === "banned") {
+            throw new Error("Only administrator can ban accounts")
         }
 
         let newPassword = null;
@@ -56,7 +61,7 @@ export class UserService {
             role: update.role || undefined
         }
 
-        return await UserRepo.updateUser(update.id, updateData);
+        return await UserRepo.updateUser(credentials.userId, updateData);
     }
 
     static async getUserDetails(id: number) {

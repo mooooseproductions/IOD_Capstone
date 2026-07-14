@@ -1,19 +1,17 @@
 import axios from "axios";
-import { store } from "../store/store";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BARLEY_BREWING_PORTAL_API,
-    // withCredentials: true // flag
+    withCredentials: true,
 });
 
-// api.interceptors.request.use((config) => {
-//     const accessToken = store.getState().auth.accessToken;
-
-//     if (accessToken) {
-//         config.headers.Authorization = `Bearer ${accessToken}`;
-//     }
-
-//     return config;
-// });
+export const setApiAccessToken = (accessToken) => {
+  if (accessToken) {
+    api.defaults.headers.common.Authorization =
+      `Bearer ${accessToken}`;
+  } else {
+    delete api.defaults.headers.common.Authorization;
+  }
+};
 
 export default api;

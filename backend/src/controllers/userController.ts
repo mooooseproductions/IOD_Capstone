@@ -1,17 +1,25 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userService";
+import { AuthRequest } from "../middleware/authMiddleware";
+import { registrationSchema } from "../validation/registrationSchema";
 
 export class UserController {
 
     static async registerUser(req: Request, res: Response) {
         try {
-            if (!req.body) {
-                throw new Error("Registration details missing")
+
+            const validate = registrationSchema.safeParse(req.body);
+            if(!validate.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid registration details",
+                    errors: validate.error.issues,
+                });
             }
 
-            const user = await UserService.registerUser(req.body);
+            const user = await UserService.registerUser(validate.data);
 
-            res.json({
+            res.status(201).json({
                 success: true,
                 message: "User registered successfully",
                 data: user
@@ -24,14 +32,14 @@ export class UserController {
         }
     }
 
-    static async updateUser(req: Request, res: Response) {
+    static async updateUser(req: AuthRequest, res: Response) {
         try {
             if (!req.body) {
                 throw new Error("Update details missing")
             }
 
-            const user = await UserService.updateUser(req.body);
-
+            const user = await UserService.updateUser(req.body, req);
+            
             res.json({
                 success: true,
                 message: "Details updated successfully",

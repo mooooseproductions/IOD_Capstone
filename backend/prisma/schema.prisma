@@ -35,6 +35,7 @@ model BrewRecord {
   originalGravity Decimal?          @db.Decimal(4, 3)
   finalGravity    Decimal?          @db.Decimal(4, 3)
   batchSize       Decimal           @db.Decimal(5, 2)
+  batchUnit       String
   userId          Int
 
   ingredient      BrewIngredient[]
@@ -71,6 +72,7 @@ model Ingredient {
   id              Int               @id @default(autoincrement())
   type            String
   name            String            @unique
+  normalisedName  String            @unique
 
   brewIngredient  BrewIngredient[]
 }
@@ -96,8 +98,9 @@ model RefreshTokens {
 }
 
 model BrewStyle {
-  id      Int           @id @default(autoincrement())
-  name    String
+  id              Int           @id @default(autoincrement())
+  name            String        @unique
+  normalisedName  String        @unique
 
   brew    BrewRecord[]
 }

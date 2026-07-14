@@ -3,6 +3,7 @@ import cors from 'cors';
 import userRoute from './src/routes/userRoute';
 import brewRoute from './src/routes/brewRoutes';
 import authRoute from './src/routes/authRoutes';
+import lookupRoute from './src/routes/lookupRoutes';
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoute);
 app.use("/api/brew", brewRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/lookup", lookupRoute);
 
 const PORT = 3000;
 

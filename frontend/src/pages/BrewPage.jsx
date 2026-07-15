@@ -18,8 +18,10 @@ import {
   setIngredientDraftField,
   submitBrew,
   fetchBrewById,
+  fetchBrewTemplate,
+  resetBrewForm,
 } from "../features/brewSlice";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 
 const amountUnits = ["g", "kg", "ml", "L", "tsp", "tbsp"];
 const batchUnits = ["L", "gal"];
@@ -164,15 +166,18 @@ function IngredientEntry({ section, title }) {
 
 function BrewPage() {
   const { brewId } = useParams();
+  const [searchParams] = useSearchParams();
+  const sourceBrewId = searchParams.get("source");
   const editing = Boolean(brewId);
+  const copying = Boolean(sourceBrewId) && !editing;
 
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const {
     formData,
     ingredients,
     styles,
     referenceStatus,
+    loadStatus,
     submitStatus,
     message,
     errors,
@@ -187,8 +192,12 @@ function BrewPage() {
   useEffect(() => {
     if (brewId) {
       dispatch(fetchBrewById(Number(brewId)));
+    } else if (sourceBrewId) {
+      dispatch(fetchBrewTemplate(Number(sourceBrewId)));
+    } else {
+      dispatch(resetBrewForm());
     }
-  }, [brewId, dispatch]);
+  }, [brewId, sourceBrewId, dispatch]);
 
   const styleNames = styles
     .map((style) => typeof style === "string" ? style : style.name)
@@ -227,15 +236,17 @@ function BrewPage() {
       : "";
 
   return (
-    <Container className="brew-page py-4">
-      <Card className="brew-card shadow-sm">
+    <main className="app-page">
+    <Container className="brew-page">
+      <Card className="brew-card">
         <Card.Body>
+          <span className="page-kicker">Batch workspace</span>
           <h1>
-            {editing ? "Update Brew" : "Add a Brew"}
+            {editing ? "Update Brew" : copying ? "Brew This Recipe" : "Add a Brew"}
           </h1>
 
           {message && (
-            <Alert variant={submitStatus === "succeeded" ? "success" : "danger"}>
+            <Alert variant={submitStatus === "succeeded" ? "success" : loadStatus === "succeeded" ? "info" : "danger"}>
               {message}
             </Alert>
           )}
@@ -303,7 +314,7 @@ function BrewPage() {
                     </Form.Group>
                   </Col>
                   <Col xs={8} md={2}>
-                    <Form.Group><Form.Label>Temperature</Form.Label><Form.Control type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} /></Form.Group>
+                    <Form.Group><Form.Label>Temperature</Form.Label><Form.Control type="number" step="1" name="temperature" value={formData.temperature} onChange={handleChange} /></Form.Group>
                   </Col>
                   <Col xs={4} md={1}>
                     <Form.Group><Form.Label>Unit</Form.Label><Form.Select name="temperatureUnit" value={formData.temperatureUnit} onChange={handleChange}><option value="C">°C</option><option value="F">°F</option></Form.Select></Form.Group>
@@ -321,7 +332,7 @@ function BrewPage() {
               </section>
 
               <div className="d-flex justify-content-end">
-                <Button type="submit">
+                <Button className="bb-primary" type="submit">
                   {submitStatus === "loading"
                     ? "Saving..."
                     : editing
@@ -334,6 +345,7 @@ function BrewPage() {
         </Card.Body>
       </Card>
     </Container>
+    </main>
   );
 }
 

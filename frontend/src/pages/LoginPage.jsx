@@ -4,6 +4,10 @@ import { useNavigate } from "react-router";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 import { loginUser } from "../features/authSlice";
 
 function LoginPage() {
@@ -33,13 +37,22 @@ function LoginPage() {
       await dispatch(loginUser(loginDetails)).unwrap();
 
       navigate("/profile");
-    } catch (error) {
+    } catch {
       // Redux already stores and displays the error
     }
   };
 
   return (
-    <Form onSubmit={handleLogin}>
+    <main className="app-page auth-page">
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={8} lg={5}>
+            <Card className="auth-card">
+              <Card.Body>
+                <span className="page-kicker">Welcome back</span>
+                <h1>Log in to your brewhouse</h1>
+                <p className="page-intro">Pick up an active batch, revisit a recipe, or plan what comes next.</p>
+                <Form className="auth-form" onSubmit={handleLogin}>
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Form.Group className="mb-3">
@@ -66,10 +79,16 @@ function LoginPage() {
         />
       </Form.Group>
 
-      <Button type="submit" disabled={status === "loading"}>
+      <Button className="bb-primary w-100" type="submit" disabled={status === "loading"}>
         {status === "loading" ? "Logging in..." : "Login"}
       </Button>
-    </Form>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </main>
   );
 }
 

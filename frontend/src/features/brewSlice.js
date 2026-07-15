@@ -127,6 +127,20 @@ export const fetchBrewById = createAsyncThunk(
   }
 );
 
+export const fetchBrewTemplate = createAsyncThunk(
+  "brew/fetchBrewTemplate",
+  async (brewId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/brew/template/${brewId}`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ?? "Unable to load the brew template."
+      );
+    }
+  }
+);
+
 const initialState = {
   formData: { ...emptyForm },
   ingredientDrafts: {
@@ -137,6 +151,7 @@ const initialState = {
   styles: [],
   availableIngredients: [],
   referenceStatus: "idle",
+  loadStatus: "idle",
   submitStatus: "idle",
   message: "",
   errors: {},
@@ -189,6 +204,18 @@ const brewSlice = createSlice({
     },
     clearBrewMessage: (state) => {
       state.message = "";
+    },
+    resetBrewForm: (state) => {
+      state.formData = { ...emptyForm };
+      state.ingredients = [];
+      state.ingredientDrafts = {
+        base: emptyIngredient("base"),
+        postWort: emptyIngredient("post-wort"),
+      };
+      state.loadStatus = "idle";
+      state.submitStatus = "idle";
+      state.message = "";
+      state.errors = {};
     },
   },
   extraReducers: (builder) => {
@@ -258,6 +285,7 @@ const brewSlice = createSlice({
         }));
 
         state.submitStatus = "idle";
+        state.loadStatus = "succeeded";
         state.message = "";
       })
       .addCase(fetchBrewById.pending, (state) => {
@@ -268,6 +296,37 @@ const brewSlice = createSlice({
         state.loadStatus = "failed";
         state.message =
           action.payload ?? "Unable to load the brew.";
+      })
+      .addCase(fetchBrewTemplate.pending, (state) => {
+        state.loadStatus = "loading";
+        state.message = "";
+      })
+      .addCase(fetchBrewTemplate.fulfilled, (state, action) => {
+        const brew = action.payload;
+
+        state.loadStatus = "succeeded";
+        state.formData = {
+          ...emptyForm,
+          name: `${brew.name} Copy`,
+          style: brew.style?.name ?? "",
+          batchSize: brew.batchSize != null ? String(brew.batchSize) : "",
+          batchUnit: brew.batchUnit ?? "L",
+          status: "planning",
+        };
+        state.ingredients = (brew.ingredient ?? []).map((record) => ({
+          clientId: `template-${brew.id}-${record.id}`,
+          type: record.ingredient.type,
+          name: record.ingredient.name,
+          amount: String(record.amount),
+          unit: record.unit,
+          timing: record.timing,
+        }));
+        state.errors = {};
+        state.message = "Recipe loaded as a new brew. Review the details before saving.";
+      })
+      .addCase(fetchBrewTemplate.rejected, (state, action) => {
+        state.loadStatus = "failed";
+        state.message = action.payload ?? "Unable to load the brew template.";
       });
 },
 });
@@ -279,6 +338,7 @@ export const {
   removeIngredient,
   setBrewErrors,
   clearBrewMessage,
+  resetBrewForm,
 } = brewSlice.actions;
 
 export default brewSlice.reducer;

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { LookupRepo } from './lookupRepo';
 const prisma = new PrismaClient();
 
@@ -90,11 +90,7 @@ export class BrewRepo {
         }
 
         return prisma.$transaction(async (tx) => {
-            /*
-              Remove the existing relationship records.
-        
-              This does not delete records from the main Ingredient table.
-            */
+
             await tx.brewIngredient.deleteMany({
                 where: {
                     brewId,
@@ -205,5 +201,139 @@ export class BrewRepo {
             },
         });
         return brew;
+    }
+
+    static async getBrewTemplate(brewId: number) {
+        return prisma.brewRecord.findUnique({
+            where: {
+                id: brewId,
+            },
+            select: {
+                id: true,
+                name: true,
+                batchSize: true,
+                batchUnit: true,
+                style: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                ingredient: {
+                    select: {
+                        id: true,
+                        timing: true,
+                        amount: true,
+                        unit: true,
+                        ingredient: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    static async searchBrews(
+        type: string,
+        query: string
+    ) {
+        const search = query.trim();
+
+        let where: Prisma.BrewRecordWhereInput = {};
+
+        switch (type) {
+            case "name":
+                where = {
+                    name: {
+                        contains: search,
+                        mode: "insensitive",
+                    },
+                };
+                break;
+
+            case "style":
+                where = {
+                    style: {
+                        name: {
+                            contains: search,
+                            mode: "insensitive",
+                        },
+                    },
+                };
+                break;
+
+            case "ingredient":
+                where = {
+                    ingredient: {
+                        some: {
+                            ingredient: {
+                                name: {
+                                    contains: search,
+                                    mode: "insensitive",
+                                },
+                            },
+                        },
+                    },
+                };
+                break;
+
+            default:
+                throw new Error("Invalid search type");
+        }
+
+        return prisma.brewRecord.findMany({
+            where,
+
+            select: {
+                id: true,
+                name: true,
+                status: true,
+                batchSize: true,
+                batchUnit: true,
+                originalGravity: true,
+                finalGravity: true,
+
+                style: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+
+                user: {
+                    select: {
+                        id: true,
+                        handle: true,
+                    },
+                },
+
+                ingredient: {
+                    select: {
+                        timing: true,
+                        amount: true,
+                        unit: true,
+
+                        ingredient: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                            },
+                        },
+                    },
+                },
+            },
+
+            orderBy: {
+                dateStarted: "desc",
+            },
+
+            take: 50,
+        });
     }
 }

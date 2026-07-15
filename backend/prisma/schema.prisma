@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  handle           String       @unique
+  name             String
+  password         String
+  status           String       @default("active")
+  role             String       @default("user")
+  accountCreatedAt DateTime     @default(now())
+  accountClosedAt  DateTime?
+  
+  brew             BrewRecord[]
+  refreshTokens    RefreshTokens[]
+  toBrew           ToBrewList[]
+}
+
+model BrewRecord {
+  id              Int               @id @default(autoincrement())
+  name            String
+  status          String            @default("planning")
+  styleId         Int?
+  dateStarted     DateTime          @default(now())
+  dateFinished    DateTime?
+  temperature     Int?
+  temperatureUnit String?          
+  originalGravity Decimal?          @db.Decimal(4, 3)
+  finalGravity    Decimal?          @db.Decimal(4, 3)
+  batchSize       Decimal           @db.Decimal(5, 2)
+  batchUnit       String
+  userId          Int
+
+  ingredient      BrewIngredient[]
+  note            BrewNote[]
+  toBrew          ToBrewList[]
+
+  style           BrewStyle?        @relation(fields: [styleId], references: [id])
+  user            User              @relation(fields: [userId], references: [id])
+}
+
+model BrewIngredient {
+  id           Int        @id @default(autoincrement())
+  timing       String
+  amount       Decimal    @db.Decimal(5, 2)
+  unit         String
+  brewId       Int
+  ingredientId Int
+
+  brew         BrewRecord @relation(fields: [brewId], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+}
+
+model BrewNote {
+  id          Int        @id @default(autoincrement())
+  dateCreated DateTime   @default(now())
+  dateUpdated DateTime?
+  content     String
+  brewId      Int
+
+  brew        BrewRecord @relation(fields: [brewId], references: [id])
+}
+
+model Ingredient {
+  id              Int               @id @default(autoincrement())
+  type            String
+  name            String            @unique
+  normalisedName  String            @unique
+
+  brewIngredient  BrewIngredient[]
+}
+
+model ToBrewList {
+  id      Int        @id @default(autoincrement())
+  brewId  Int
+  userId  Int
+  user    User       @relation(fields: [userId], references: [id])
+  brew    BrewRecord @relation(fields: [brewId], references: [id])
+
+  @@unique([userId, brewId])
+}
+
+model RefreshTokens {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model BrewStyle {
+  id              Int           @id @default(autoincrement())
+  name            String        @unique
+  normalisedName  String        @unique
+
+  brew    BrewRecord[]
+}

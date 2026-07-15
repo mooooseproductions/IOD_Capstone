@@ -17,7 +17,9 @@ import {
   setBrewField,
   setIngredientDraftField,
   submitBrew,
+  fetchBrewById,
 } from "../features/brewSlice";
+import { useParams } from "react-router";
 
 const amountUnits = ["g", "kg", "ml", "L", "tsp", "tbsp"];
 const batchUnits = ["L", "gal"];
@@ -161,6 +163,9 @@ function IngredientEntry({ section, title }) {
 }
 
 function BrewPage() {
+  const { brewId } = useParams();
+  const editing = Boolean(brewId);
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const {
@@ -178,6 +183,12 @@ function BrewPage() {
       dispatch(fetchBrewReferenceData());
     }
   }, [dispatch, referenceStatus]);
+
+  useEffect(() => {
+    if (brewId) {
+      dispatch(fetchBrewById(Number(brewId)));
+    }
+  }, [brewId, dispatch]);
 
   const styleNames = styles
     .map((style) => typeof style === "string" ? style : style.name)
@@ -203,7 +214,7 @@ function BrewPage() {
       return;
     }
 
-    dispatch(submitBrew({ formData, ingredients, styles, userId: user.id }));
+    dispatch(submitBrew({ brewId: brewId ? Number(brewId) : null, formData, ingredients, styles }));
   };
 
   const calculatedAbv =
@@ -219,7 +230,9 @@ function BrewPage() {
     <Container className="brew-page py-4">
       <Card className="brew-card shadow-sm">
         <Card.Body>
-          <h1 className="brew-title">Add a Brew</h1>
+          <h1>
+            {editing ? "Update Brew" : "Add a Brew"}
+          </h1>
 
           {message && (
             <Alert variant={submitStatus === "succeeded" ? "success" : "danger"}>
@@ -308,8 +321,12 @@ function BrewPage() {
               </section>
 
               <div className="d-flex justify-content-end">
-                <Button size="lg" type="submit" disabled={submitStatus === "loading"}>
-                  {submitStatus === "loading" ? "Saving brew..." : "Save Brew"}
+                <Button type="submit">
+                  {submitStatus === "loading"
+                    ? "Saving..."
+                    : editing
+                      ? "Update Brew"
+                      : "Save Brew"}
                 </Button>
               </div>
             </Form>

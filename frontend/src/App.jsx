@@ -25,6 +25,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/brewing" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
+        <Route path="/brewing/:brewId" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
       </Routes>
     </>
   )

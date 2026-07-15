@@ -5,5 +5,7 @@ import { authMiddleware } from "../middleware/authMiddleware";
 const router = Router();
 
 router.post("/", authMiddleware, BrewController.addBrew);
+router.get("/:id", authMiddleware, BrewController.getBrewById);
+router.put("/:id", authMiddleware, BrewController.updateBrew);
 
 export default router;

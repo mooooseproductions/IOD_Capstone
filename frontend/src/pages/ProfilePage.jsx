@@ -6,8 +6,10 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../features/profileSlice";
+import { Link } from "react-router";
 
 const completedStatuses = new Set(["complete", "completed"]);
 
@@ -35,7 +37,16 @@ function BrewCard({ brew }) {
       <Card className="h-100 shadow-sm text-start">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
-            <Card.Title className="mb-0">{brew.name}</Card.Title>
+            <Card.Title className="mb-0">
+              <Button
+                as={Link}
+                to={`/brewing/${brew.id}`}
+                variant="link"
+                className="p-0 text-start text-decoration-none"
+              >
+                {brew.name}
+              </Button>
+            </Card.Title>
             <Badge bg={completedStatuses.has(brew.status?.toLowerCase()) ? "success" : "primary"}>
               {brew.status}
             </Badge>

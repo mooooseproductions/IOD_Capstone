@@ -75,4 +75,8 @@ export class UserService {
     static async removeUser(id: number) {
         return await UserRepo.removeUser(id);
     }
+
+    static async getUserProfile(id: number) {
+        return await UserRepo.getUserProfile(id);
+    }
 }

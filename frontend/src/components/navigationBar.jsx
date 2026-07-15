@@ -38,6 +38,8 @@ function NavigationBar() {
             ) : (
               <Nav.Link as={Link} to={"/login"}>Login</Nav.Link>
             )}
+            <Nav.Link as={Link} to={"/brewing"}>Beers</Nav.Link>
+            <Nav.Link as={Link} to={"/profile"}>Account</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

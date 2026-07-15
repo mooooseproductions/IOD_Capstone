@@ -1,23 +1,43 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
-export const createBrewSchema = z.object({
+export const brewSchema = z.object({
     name: z.string().trim().min(1, "Brew name is required"),
 
     status: z
         .enum(["planning", "brewing", "fermenting", "finished"])
         .optional(),
 
-    style: z.string().trim().optional(),
+    styleId: z.coerce.number().int().positive().optional(),
 
     batchSize: z.coerce
         .number()
         .positive("Batch size must be greater than zero"),
+    
+    batchUnit: z.string().trim(),
 
-    originalGravity: z.coerce
-        .number()
-        .min(0.9)
-        .max(2)
-        .optional(),
+    temperature: z.coerce.number().positive().optional(),
+
+    temperatureUnit: z.string().optional(),
+
+    originalGravity: z.preprocess(
+        (value) => value === "" || value === null ? undefined : value,
+
+        z.coerce
+            .number()
+            .min(0.9)
+            .max(2)
+            .optional()
+    ),
+
+    finalGravity: z.preprocess(
+        (value) => value === "" || value === null ? undefined : value,
+
+        z.coerce
+            .number()
+            .min(0.9)
+            .max(2)
+            .optional()
+    ),
 
     ingredients: z.array(
         z.object({
@@ -38,4 +58,4 @@ export const createBrewSchema = z.object({
     ).optional()
 });
 
-export type CreateBrewInput = z.infer<typeof createBrewSchema>;
+export type CreateBrewInput = z.infer<typeof brewSchema>;

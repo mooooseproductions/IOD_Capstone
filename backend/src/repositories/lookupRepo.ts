@@ -28,9 +28,9 @@ export class LookupRepo {
         });
     }
 
-    static async addStyle(input: string) {
-        const name = input.trim();
-        const normalisedName = input.trim().toLowerCase();
+    static async addStyle(input: any) {
+        const name = input.name.trim();
+        const normalisedName = input.name.trim().toLowerCase();
 
         return await prisma.brewStyle.upsert({
             where: {

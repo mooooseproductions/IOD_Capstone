@@ -92,6 +92,11 @@ const ingredients = [
   { name: "Gelatine", type: "Brewing Aid" },
   { name: "Yeast Nutrient", type: "Brewing Aid" },
   { name: "Glucoamylase", type: "Brewing Aid" },
+
+  // Priming
+  { name: "Priming Sugar", type: "Priming" },
+  { name: "Priming Tablets", type: "Priming" },
+  { name: "Force Carbonation", type: "Priming" },
 ];
 
 async function seedBrewStyles() {

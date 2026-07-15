@@ -9,7 +9,7 @@ export class UserController {
         try {
 
             const validate = registrationSchema.safeParse(req.body);
-            if(!validate.success) {
+            if (!validate.success) {
                 return res.status(400).json({
                     success: false,
                     message: "Invalid registration details",
@@ -39,7 +39,7 @@ export class UserController {
             }
 
             const user = await UserService.updateUser(req.body, req);
-            
+
             res.json({
                 success: true,
                 message: "Details updated successfully",
@@ -76,7 +76,7 @@ export class UserController {
             const status = req.query.status as string | undefined;
             console.log(status);
             const user = await UserService.getAllUsers(status);
-            
+
 
             res.json({
                 success: true,
@@ -98,6 +98,37 @@ export class UserController {
             res.json({
                 success: true,
                 message: "User removed successfully",
+                data: user
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    }
+
+    static async getUserProfile(req: AuthRequest, res: Response) {
+        try {
+            if (!req.user?.userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Authentication required",
+                });
+            }
+
+            const user = await UserService.getUserProfile(req.user.userId);
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User profile not found",
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "Details fetched successfully",
                 data: user
             });
         } catch (error: any) {

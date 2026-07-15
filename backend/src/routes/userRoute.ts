@@ -7,8 +7,10 @@ const router = Router()
 
 router.put("/update", authMiddleware, UserController.updateUser);
 router.post("/register", UserController.registerUser);
+router.get("/profile", authMiddleware, UserController.getUserProfile);
 router.get("/", UserController.getAllUsers);
 router.get("/:id", UserController.getUserDetails);
 router.delete("/:id", UserController.removeUser);
+
 
 export default router;

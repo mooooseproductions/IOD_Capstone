@@ -11,6 +11,7 @@ import BrewPage from './pages/BrewPage';
 import { Route, Routes } from 'react-router'
 
 import './App.css'
+import ProtectedRoute from './components/routeProtector'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,8 +23,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/brewing" element={<BrewPage />} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/brewing" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
       </Routes>
     </>
   )

@@ -3,9 +3,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api, { setApiAccessToken } from "../api/connection";
 
+const storedAccessToken =
+  localStorage.getItem("accessToken");
+
 const initialState = {
   user: null,
-  accessToken: null,
+  accessToken: storedAccessToken,
   status: "idle",
   error: "",
 };

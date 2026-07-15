@@ -69,4 +69,27 @@ export class UserRepo {
         return true;
     }
 
+    static async getUserProfile(id: number) {
+        return prisma.user.findUnique({
+            where: {
+                id,
+            },
+            select: {
+                id: true,
+                name: true,
+                handle: true,
+                email: true,
+                accountCreatedAt: true,
+
+                brew: {
+                    include: {
+                        style: true,
+                    },
+                    orderBy: {
+                        id: "desc",
+                    },
+                },
+            },
+        });
+    }
 }

@@ -50,7 +50,7 @@ function LoginPage() {
             <Card className="auth-card">
               <Card.Body>
                 <span className="page-kicker">Welcome back</span>
-                <h1>Log in to your brewhouse</h1>
+                <h1>Let's get back to brewing</h1>
                 <p className="page-intro">Pick up an active batch, revisit a recipe, or plan what comes next.</p>
                 <Form className="auth-form" onSubmit={handleLogin}>
       {error && <Alert variant="danger">{error}</Alert>}

@@ -12,7 +12,7 @@ import ProtectedRoute from './components/routeProtector'
 
 function App() {
   return (
-    <>
+    <div className="app">
       <NavigationBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -23,7 +23,7 @@ function App() {
         <Route path="/brewing/:brewId" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
       </Routes>
-    </>
+    </div>
   )
 }
 

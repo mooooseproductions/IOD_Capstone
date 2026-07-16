@@ -73,7 +73,7 @@ const authSlice = createSlice({
       state.status = "idle";
       state.error = "";
 
-      localStorage.removeItem("accessToken");
+      setApiAccessToken(null);
     },
   },
 
@@ -113,10 +113,6 @@ const authSlice = createSlice({
       })
 
       .addCase(logoutUser.rejected, (state, action) => {
-        /*
-          Clear frontend authentication even if the backend logout
-          request fails.
-        */
         state.status = "idle";
         state.user = null;
         state.accessToken = null;

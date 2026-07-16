@@ -34,8 +34,7 @@ function BrewCard({ brew }) {
               <Button
                 as={Link}
                 to={`/brewing/${brew.id}`}
-                variant="link"
-                className="brew-title-link p-0 text-start text-decoration-none"
+                variant="primary"
               >
                 {brew.name}
               </Button>

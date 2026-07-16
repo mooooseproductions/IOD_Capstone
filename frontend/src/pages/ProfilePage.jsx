@@ -14,7 +14,7 @@ import {
   fetchFavourites,
   removeFavourite,
 } from "../features/searchSlice";
-import BrewCard from "../components/BrewCard";
+import BrewSection from "../components/brewList";
 
 const completedStatuses = new Set(["complete", "completed"]);
 
@@ -27,25 +27,6 @@ const formatDate = (date) => {
     year: "numeric",
   }).format(new Date(date));
 };
-
-function BrewSection({ title, brews, emptyMessage }) {
-  return (
-    <section className="brew-list-section mb-5 text-start">
-      <div className="section-heading d-flex align-items-center gap-2 mb-3">
-        <h2 className="mb-0">{title}</h2>
-        <Badge bg="secondary" pill>{brews.length}</Badge>
-      </div>
-
-      {brews.length === 0 ? (
-        <Card body className="empty-state">{emptyMessage}</Card>
-      ) : (
-        <Row className="g-3">
-          {brews.map((brew) => <BrewCard key={brew.id} brew={brew} />)}
-        </Row>
-      )}
-    </section>
-  );
-}
 
 function ProfilePage() {
   const dispatch = useDispatch();

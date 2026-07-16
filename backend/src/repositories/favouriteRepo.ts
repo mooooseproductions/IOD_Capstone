@@ -58,10 +58,8 @@ export class FavouriteRepo {
     ) {
         return prisma.toBrewList.deleteMany({
             where: {
-                userId_brewId: {
                     userId,
                     brewId,
-                },
             },
         });
     }

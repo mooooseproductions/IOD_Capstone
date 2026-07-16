@@ -4,10 +4,10 @@ export const brewSchema = z.object({
     name: z.string().trim().min(1, "Brew name is required"),
 
     status: z
-        .enum(["planning", "brewing", "fermenting", "finished"])
+        .enum(["planning", "brewing", "fermenting", "conditioning", "complete", "finished"])
         .optional(),
 
-    styleId: z.coerce.number().int().positive().optional(),
+    styleId: z.coerce.number().int().positive(),
 
     batchSize: z.coerce
         .number()
@@ -15,7 +15,10 @@ export const brewSchema = z.object({
     
     batchUnit: z.string().trim(),
 
-    temperature: z.coerce.number().positive().optional(),
+    temperature: z.preprocess(
+        (value) => value === "" || value === null ? undefined : value,
+        z.coerce.number().int().optional()
+    ),
 
     temperatureUnit: z.string().optional(),
 
@@ -47,7 +50,7 @@ export const brewSchema = z.object({
             amount: z.coerce
                 .number()
                 .positive("Ingredient amount must be greater than zero"),
-            unit: z.enum(["g", "kg", "ml", "l", "oz", "lb", "fl_oz", "gal"])
+            unit: z.enum(["g", "kg", "ml", "L", "l", "oz", "lb", "fl_oz", "gal", "tsp", "tbsp"])
         })
     ).min(1, "At least one ingredient is required"),
 

@@ -17,157 +17,30 @@ import {
   setBrewField,
   setIngredientDraftField,
   submitBrew,
+  fetchBrewById,
+  fetchBrewTemplate,
+  resetBrewForm,
 } from "../features/brewSlice";
+import { useParams, useSearchParams } from "react-router";
+import IngredientEntry from "../components/ingredientEntry";
 
-const amountUnits = ["g", "kg", "ml", "L", "tsp", "tbsp"];
 const batchUnits = ["L", "gal"];
 const statuses = ["planning", "brewing", "fermenting", "conditioning", "complete"];
 
-function IngredientEntry({ section, title }) {
-  const dispatch = useDispatch();
-  const { ingredientDrafts, ingredients, availableIngredients, errors } =
-    useSelector((state) => state.brew);
-  const draft = ingredientDrafts[section];
-
-  const types = [...new Set(availableIngredients.map((item) => item.type))]
-    .filter(Boolean)
-    .sort();
-
-  const matchingNames = availableIngredients
-    .filter((item) => !draft.type || item.type === draft.type)
-    .map((item) => item.name)
-    .sort();
-
-  const sectionItems = ingredients.filter(
-    (item) => item.timing === draft.timing
-  );
-
-  const changeDraft = (field, value) => {
-    dispatch(setIngredientDraftField({ section, field, value }));
-  };
-
-  return (
-    <section className="brew-section">
-      <h2>{title}</h2>
-
-      <Row className="g-2 align-items-end">
-        <Col xs={12} md={3}>
-          <Form.Group>
-            <Form.Label>Ingredient type</Form.Label>
-            <Form.Select
-              value={draft.type}
-              onChange={(event) => changeDraft("type", event.target.value)}
-            >
-              <option value="">Select type</option>
-              {types.map((type) => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-
-        <Col xs={12} md={4}>
-          <Form.Group>
-            <Form.Label>Ingredient name</Form.Label>
-            <Form.Control
-              type="text"
-              list={`${section}-ingredient-names`}
-              value={draft.name}
-              disabled={!draft.type}
-              placeholder={draft.type ? "Select or enter a name" : "Select a type first"}
-              onChange={(event) => changeDraft("name", event.target.value)}
-            />
-            <datalist id={`${section}-ingredient-names`}>
-              {matchingNames.map((name) => <option key={name} value={name} />)}
-            </datalist>
-          </Form.Group>
-        </Col>
-
-        <Col xs={7} md={2}>
-          <Form.Group>
-            <Form.Label>Amount</Form.Label>
-            <Form.Control
-              type="number"
-              min="0"
-              step="any"
-              value={draft.amount}
-              onChange={(event) => changeDraft("amount", event.target.value)}
-            />
-          </Form.Group>
-        </Col>
-
-        <Col xs={5} md={2}>
-          <Form.Group>
-            <Form.Label>Unit</Form.Label>
-            <Form.Select
-              value={draft.unit}
-              onChange={(event) => changeDraft("unit", event.target.value)}
-            >
-              {amountUnits.map((unit) => <option key={unit}>{unit}</option>)}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-
-        <Col xs={12} md={1}>
-          <Button
-            className="w-100"
-            type="button"
-            onClick={() => dispatch(addIngredient({
-              section,
-              clientId: crypto.randomUUID(),
-            }))}
-          >
-            Add
-          </Button>
-        </Col>
-      </Row>
-
-      {errors[`${section}Ingredient`] && (
-        <div className="text-danger small mt-2">
-          {errors[`${section}Ingredient`]}
-        </div>
-      )}
-
-      {sectionItems.length > 0 && (
-        <Table responsive hover className="ingredient-table mt-3">
-          <thead>
-            <tr>
-              <th>Type</th><th>Name</th><th>Amount</th><th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {sectionItems.map((item) => (
-              <tr key={item.clientId}>
-                <td>{item.type}</td>
-                <td>{item.name}</td>
-                <td>{item.amount} {item.unit}</td>
-                <td className="text-end">
-                  <Button
-                    size="sm"
-                    variant="outline-danger"
-                    type="button"
-                    onClick={() => dispatch(removeIngredient(item.clientId))}
-                  >
-                    Remove
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      )}
-    </section>
-  );
-}
-
 function BrewPage() {
+  const { brewId } = useParams();
+  const [searchParams] = useSearchParams();
+  const sourceBrewId = searchParams.get("source");
+  const editing = Boolean(brewId);
+  const copying = Boolean(sourceBrewId) && !editing;
+
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const {
     formData,
     ingredients,
     styles,
     referenceStatus,
+    loadStatus,
     submitStatus,
     message,
     errors,
@@ -178,6 +51,16 @@ function BrewPage() {
       dispatch(fetchBrewReferenceData());
     }
   }, [dispatch, referenceStatus]);
+
+  useEffect(() => {
+    if (brewId) {
+      dispatch(fetchBrewById(Number(brewId)));
+    } else if (sourceBrewId) {
+      dispatch(fetchBrewTemplate(Number(sourceBrewId)));
+    } else {
+      dispatch(resetBrewForm());
+    }
+  }, [brewId, sourceBrewId, dispatch]);
 
   const styleNames = styles
     .map((style) => typeof style === "string" ? style : style.name)
@@ -203,7 +86,7 @@ function BrewPage() {
       return;
     }
 
-    dispatch(submitBrew({ formData, ingredients, styles, userId: user.id }));
+    dispatch(submitBrew({ brewId: brewId ? Number(brewId) : null, formData, ingredients, styles }));
   };
 
   const calculatedAbv =
@@ -216,13 +99,17 @@ function BrewPage() {
       : "";
 
   return (
-    <Container className="brew-page py-4">
-      <Card className="brew-card shadow-sm">
+    <main className="app-page">
+    <Container className="brew-page">
+      <Card className="brew-card">
         <Card.Body>
-          <h1 className="brew-title">Add a Brew</h1>
+          <span className="page-kicker">Batch workspace</span>
+          <h1>
+            {editing ? "Update Brew" : copying ? "Brew This Recipe" : "Add a Brew"}
+          </h1>
 
           {message && (
-            <Alert variant={submitStatus === "succeeded" ? "success" : "danger"}>
+            <Alert variant={submitStatus === "succeeded" ? "success" : loadStatus === "succeeded" ? "info" : "danger"}>
               {message}
             </Alert>
           )}
@@ -290,7 +177,7 @@ function BrewPage() {
                     </Form.Group>
                   </Col>
                   <Col xs={8} md={2}>
-                    <Form.Group><Form.Label>Temperature</Form.Label><Form.Control type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} /></Form.Group>
+                    <Form.Group><Form.Label>Temperature</Form.Label><Form.Control type="number" step="1" name="temperature" value={formData.temperature} onChange={handleChange} /></Form.Group>
                   </Col>
                   <Col xs={4} md={1}>
                     <Form.Group><Form.Label>Unit</Form.Label><Form.Select name="temperatureUnit" value={formData.temperatureUnit} onChange={handleChange}><option value="C">°C</option><option value="F">°F</option></Form.Select></Form.Group>
@@ -308,8 +195,12 @@ function BrewPage() {
               </section>
 
               <div className="d-flex justify-content-end">
-                <Button size="lg" type="submit" disabled={submitStatus === "loading"}>
-                  {submitStatus === "loading" ? "Saving brew..." : "Save Brew"}
+                <Button className="bb-primary" type="submit">
+                  {submitStatus === "loading"
+                    ? "Saving..."
+                    : editing
+                      ? "Update Brew"
+                      : "Save Brew"}
                 </Button>
               </div>
             </Form>
@@ -317,6 +208,7 @@ function BrewPage() {
         </Card.Body>
       </Card>
     </Container>
+    </main>
   );
 }
 

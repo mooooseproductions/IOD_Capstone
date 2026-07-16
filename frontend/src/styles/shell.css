@@ -1,0 +1,105 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+}
+
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image: url("../assets/barely-brewing-logo.webp"), url("../assets/barely-brewing-logo.webp");
+  background-repeat: no-repeat, no-repeat;
+  background-position: left, right;
+  background-size: min(55vw, 700px), min(55vw, 700px);
+
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-page {
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  padding: clamp(2.75rem, 6vw, 5rem) 0;
+  background:
+    radial-gradient(circle at 92% 6%, rgba(198, 138, 38, 0.1), transparent 0.9),
+    linear-gradient(145deg, #fffdf8 0%, var(--bb-cream) 100%);
+}
+
+.page-kicker {
+  display: inline-block;
+  margin-bottom: 0.7rem;
+  color: var(--bb-hop);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.page-intro,
+.app-page .text-muted {
+  color: var(--bb-muted) !important;
+}
+
+.app-page h1 {
+  margin-bottom: 0.8rem;
+  font-size: clamp(2.35rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.app-page h2 {
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  font-weight: 700;
+}
+
+.app-page .card {
+  border-color: var(--bb-border);
+}
+
+.app-page .form-label {
+  margin-bottom: 0.45rem;
+  color: var(--bb-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.app-page .form-control,
+.app-page .form-select {
+  min-height: 46px;
+  border-color: rgba(52, 40, 31, 0.22);
+  border-radius: 0.35rem;
+  background-color: #fffdf8;
+  color: var(--bb-ink);
+}
+
+.app-page textarea.form-control {
+  min-height: 9rem;
+}
+
+.app-page .form-control:focus,
+.app-page .form-select:focus {
+  border-color: var(--bb-malt);
+  box-shadow: 0 0 0 0.22rem rgba(198, 138, 38, 0.16);
+}
+
+.app-page .form-control[readonly] {
+  background: rgba(89, 107, 61, 0.08);
+}
+
+.btn.bb-primary,
+.app-page .btn-primary {
+  border-color: var(--bb-malt-dark);
+  background: var(--bb-malt-dark);
+  color: #fff;
+  font-weight: 700;
+}

@@ -1,0 +1,33 @@
+.btn.bb-primary:hover,
+.btn.bb-primary:focus-visible,
+.app-page .btn-primary:hover,
+.app-page .btn-primary:focus-visible {
+  border-color: var(--bb-ink);
+  background: var(--bb-ink);
+}
+
+.app-page .btn-outline-success,
+.app-page .btn-outline-secondary {
+  border-color: var(--bb-hop);
+  color: var(--bb-hop-dark);
+}
+
+.app-page .btn-outline-success:hover,
+.app-page .btn-outline-secondary:hover {
+  border-color: var(--bb-hop);
+  background: var(--bb-hop);
+  color: #fff;
+}
+
+.app-page .badge.bg-primary,
+.app-page .badge.bg-secondary {
+  background: var(--bb-hop) !important;
+}
+
+.app-page .badge.bg-success {
+  background: var(--bb-hop-dark) !important;
+}
+
+.app-page .alert {
+  border-radius: 0.35rem;
+}

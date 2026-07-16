@@ -3,6 +3,7 @@ import registrationReducer from "../features/registrationSlice";
 import authReducer from "../features/authSlice";
 import brewReducer from "../features/brewSlice";
 import profileReducer from "../features/profileSlice";
+import searchReducer from "../features/searchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     auth: authReducer,
     brew: brewReducer,
     profile: profileReducer,
+    search: searchReducer,
   },
 });

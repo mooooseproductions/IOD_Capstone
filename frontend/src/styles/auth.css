@@ -1,0 +1,19 @@
+.auth-card {
+  border-radius: 0;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: var(--bb-shadow);
+}
+
+.auth-card .card-body {
+  padding: clamp(2rem, 6vw, 3.5rem);
+}
+
+.auth-card .page-intro {
+  margin-bottom: 2rem;
+  line-height: 1.65;
+}
+
+.auth-form .btn {
+  min-height: 48px;
+  margin-top: 0.35rem;
+}

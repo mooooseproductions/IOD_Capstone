@@ -1,6 +1,10 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 import { useDispatch, useSelector } from "react-redux";
 import {
     registerUser,
@@ -56,7 +60,16 @@ function RegistrationPage() {
     };
 
     return (
-        <Form onSubmit={handleRegister}>
+        <main className="app-page auth-page">
+          <Container>
+            <Row className="justify-content-center">
+              <Col md={8} lg={5}>
+                <Card className="auth-card">
+                  <Card.Body>
+                    <span className="page-kicker">Join the brewery</span>
+                    <h1>Create your account</h1>
+                    <p className="page-intro">Keep your batches, recipes, and favourite community brews together.</p>
+                    <Form className="auth-form" onSubmit={handleRegister}>
             {message && (
                 <Alert variant={status === "failed" ? "danger" : "success"}>
                     {message}
@@ -127,10 +140,16 @@ function RegistrationPage() {
                 </Form.Control.Feedback>
             </Form.Group>
 
-            <Button type="submit" disabled={submitting}>
+            <Button className="bb-primary w-100" type="submit" disabled={submitting}>
                 {submitting ? "Registering..." : "Register"}
             </Button>
-        </Form>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        </main>
     );
 }
 

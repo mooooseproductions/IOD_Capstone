@@ -4,6 +4,7 @@ import userRoute from './src/routes/userRoute';
 import brewRoute from './src/routes/brewRoutes';
 import authRoute from './src/routes/authRoutes';
 import lookupRoute from './src/routes/lookupRoutes';
+import favouriteRoute from './src/routes/favouriteRoute';
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 
@@ -28,6 +29,7 @@ app.use("/api/user", userRoute);
 app.use("/api/brew", brewRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/lookup", lookupRoute);
+app.use("/api/favourites", favouriteRoute);
 
 const PORT = 3000;
 

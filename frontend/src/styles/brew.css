@@ -1,0 +1,141 @@
+.profile-hero {
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--bb-ink);
+  box-shadow: var(--bb-shadow);
+}
+
+.profile-hero .card-body {
+  padding: clamp(2rem, 5vw, 3rem);
+  color: var(--bb-ink);
+}
+
+.profile-hero h1,
+.profile-hero strong {
+  color: var(--bb-hop-dark);
+}
+
+.profile-hero strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #d9aa52;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--bb-border);
+}
+
+.empty-state {
+  border-style: dashed !important;
+  background: rgba(255, 253, 248, 0.55);
+  color: var(--bb-muted);
+}
+
+.brew-card-ui {
+  border-radius: 0;
+  background: rgba(255, 253, 248, 0.9);
+  box-shadow: 0 0.75rem 2rem rgba(52, 40, 31, 0.07);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.brew-card-ui:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1rem 2.5rem rgba(52, 40, 31, 0.12);
+}
+
+.brew-card-ui .card-body {
+  padding: 1.5rem;
+}
+
+.brew-card-ui .card-title,
+.brew-title-link {
+  color: var(--bb-ink) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.brew-title-link:hover {
+  color: var(--bb-malt-dark) !important;
+}
+
+.brew-card-ui dt {
+  color: var(--bb-muted);
+  font-weight: 600;
+}
+
+.brew-page {
+  max-width: 1140px;
+}
+
+.brew-card {
+  border-radius: 0;
+  background: rgba(255, 253, 248, 0.96);
+  box-shadow: var(--bb-shadow);
+}
+
+.brew-card > .card-body {
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+.brew-section {
+  margin: 2.25rem 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--bb-border);
+}
+
+.brew-section h2 {
+  margin-bottom: 1.25rem;
+}
+
+.ingredient-table {
+  overflow: hidden;
+  border: 1px solid var(--bb-border);
+  background: #fffdf8;
+  color: var(--bb-ink);
+}
+
+.ingredient-table thead th {
+  border-bottom-color: var(--bb-border);
+  background: rgba(89, 107, 61, 0.1);
+  color: var(--bb-hop-dark);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spinner-border {
+  color: var(--bb-malt-dark);
+}
+
+@media (max-width: 991px) {
+  .site-navbar .nav-link {
+    margin: 0.15rem 0;
+    border-radius: 0.25rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .app-page {
+    padding: 2.5rem 0;
+  }
+
+  .auth-card .card-body,
+  .brew-card > .card-body {
+    padding: 1.4rem;
+  }
+
+  .brew-card-ui .btn,
+  .search-result-card .btn {
+    flex: 1 1 auto;
+  }
+}

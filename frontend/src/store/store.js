@@ -4,6 +4,7 @@ import authReducer from "../features/authSlice";
 import brewReducer from "../features/brewSlice";
 import profileReducer from "../features/profileSlice";
 import searchReducer from "../features/searchSlice";
+import favouriteReducer from "../features/favouriteSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     brew: brewReducer,
     profile: profileReducer,
     search: searchReducer,
+    favourites: favouriteReducer,
   },
 });

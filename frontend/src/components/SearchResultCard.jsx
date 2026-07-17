@@ -4,13 +4,24 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
-import {
-  addFavourite,
-  removeFavourite,
-} from "../features/searchSlice";
+import { addFavourite, removeFavourite, fetchFavourites } from "../features/favouriteSlice";
 
 function SearchResultCard({ brew, favourite, changing }) {
   const dispatch = useDispatch();
+
+  const handleFavourite = async () => {
+    try {
+      if (favourite) {
+        await dispatch(removeFavourite(brew.id)).unwrap();
+      } else {
+        await dispatch(addFavourite(brew.id)).unwrap();
+      }
+
+      await dispatch(fetchFavourites());
+    } catch (error) {
+      console.error("Unable to update favourite:", error);
+    }
+  };
 
   return (
     <Col xs={12} md={6} xl={4}>
@@ -53,9 +64,7 @@ function SearchResultCard({ brew, favourite, changing }) {
               type="button"
               variant={favourite ? "outline-danger" : "outline-secondary"}
               disabled={changing}
-              onClick={() => dispatch(
-                favourite ? removeFavourite(brew.id) : addFavourite(brew.id)
-              )}
+              onClick={handleFavourite}
             >
               {changing ? "Saving..." : favourite ? "Remove Favourite" : "Favourite"}
             </Button>

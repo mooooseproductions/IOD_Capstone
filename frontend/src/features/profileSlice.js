@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../api/connection";
+import { logoutUser } from "./authSlice";
 
 export const fetchUserProfile = createAsyncThunk(
   "profile/fetchUserProfile",
@@ -47,7 +48,13 @@ const profileSlice = createSlice({
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload ?? "Unable to load your profile.";
-      });
+      })
+      .addCase(logoutUser.pending, (state) => {
+      state.user = null;
+      state.brews = [];
+      state.status = "idle";
+      state.error = "";
+    });
   },
 });
 

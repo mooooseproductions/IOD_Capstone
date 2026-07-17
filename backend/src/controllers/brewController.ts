@@ -1,6 +1,6 @@
 import { BrewService } from "../services/brewServices";
 import { Response } from "express";
-import { brewSchema } from "../validation/brewValidation";
+import { brewSchema } from "../validation/brewSchema";
 import { AuthRequest } from "../middleware/authMiddleware";
 
 export class BrewController {
@@ -23,7 +23,7 @@ export class BrewController {
 
             res.json({
                 success: true,
-                data: brew
+                message: `Brew ID ${brew} added successfully`
             });
         } catch (error: any) {
             res.status(500).json({

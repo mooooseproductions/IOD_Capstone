@@ -29,6 +29,7 @@ function NavigationBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto align-items-lg-center">
             <Nav.Link as={Link} to={"/"}>Home</Nav.Link>
+            <Nav.Link as={Link} to={"/aboutus"}>About Us</Nav.Link>
             <Nav.Link as={Link} to={"/register"}>Sign Up</Nav.Link>
             {isLoggedIn ? (
               <Nav.Link

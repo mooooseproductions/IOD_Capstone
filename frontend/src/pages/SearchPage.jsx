@@ -9,26 +9,14 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchFavourites,
-  searchBrews,
-  setSearchQuery,
-  setSearchType,
-} from "../features/searchSlice";
+import { searchBrews, setSearchQuery, setSearchType } from "../features/searchSlice";
+import { fetchFavourites } from "../features/favouriteSlice";
 import SearchResultCard from "../components/SearchResultCard";
 
 function SearchPage() {
   const dispatch = useDispatch();
-  const {
-    searchType,
-    query,
-    results,
-    favourites,
-    searchStatus,
-    favouritesStatus,
-    changingFavouriteId,
-    error,
-  } = useSelector((state) => state.search);
+  const { items: favourites, status: favouritesStatus, changingFavouriteId } = useSelector((state) => state.favourites);
+  const { searchType, query, results, searchStatus, error } = useSelector((state) => state.search);
 
   useEffect(() => {
     if (favouritesStatus === "idle") dispatch(fetchFavourites());

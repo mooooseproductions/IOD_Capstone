@@ -16,7 +16,7 @@ function HomePage() {
         <Container>
           <Row className="align-items-center g-5">
             <Col lg={6} className="landing-copy text-start">
-              <span className="landing-kicker">Tae your home brewing to the next level.</span>
+              <span className="landing-kicker">Take your home brewing to the next level.</span>
               <h1>Find ideas.<br />Brew better.</h1>
               <p className="landing-lead">
                 Barely Brewing is a homebrewing resource for extract brewers looking to create and share custom beers.

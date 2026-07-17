@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import { UserRepo } from '../repositories/userRepo';
+import { UserDTO } from "../classes/authDTO";
+import { ActiveBrewDTO } from "../classes/activeBrewDTO";
 
 export class UserService {
 
@@ -23,10 +25,11 @@ export class UserService {
 
         const encryptPassword = await bcrypt.hash(user.password, 10);
 
-        return await UserRepo.registerUser(user, encryptPassword);
+        const userDetails = await UserRepo.registerUser(user, encryptPassword);
+        return new UserDTO(userDetails);
     }
 
-    static async updateUser(update: any, credentials: any) { // needs role check to change status or role
+    static async updateUser(update: any, credentials: any) {
 
         if (credentials.role !== "admin" && update.email) {
             throw new Error("Please contact administrator to change email")
@@ -68,15 +71,21 @@ export class UserService {
         return await UserRepo.getUserDetails(id);
     }
 
-    static async getAllUsers(status?: string) {
-        return await UserRepo.getAllUsers(status || undefined);
-    }
+    // descoped admin function
+    // static async getAllUsers(status?: string) {
+    //     return await UserRepo.getAllUsers(status || undefined);
+    // }
 
-    static async removeUser(id: number) {
-        return await UserRepo.removeUser(id);
-    }
+    // descoped admin function
+    // static async removeUser(id: number) {
+    //     return await UserRepo.removeUser(id);
+    // }
 
     static async getUserProfile(id: number) {
-        return await UserRepo.getUserProfile(id);
+        const profile = await UserRepo.getUserProfile(id);
+        return {
+            ...profile,
+            brew: profile?.brew.map(p => new ActiveBrewDTO(p))
+        }
     }
 }

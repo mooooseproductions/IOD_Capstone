@@ -53,9 +53,9 @@ export class UserController {
         }
     }
 
-    static async getUserDetails(req: Request, res: Response) {
+    static async getUserDetails(req: AuthRequest, res: Response) {
         try {
-            const id = Number(req.params.id);
+            const id = Number(req.user?.userId);
             const user = await UserService.getUserDetails(id);
             console.log(user);
             res.json({
@@ -70,43 +70,45 @@ export class UserController {
         }
     }
 
-    static async getAllUsers(req: Request, res: Response) {
-        try {
+    // descoped admin function
+    // static async getAllUsers(req: Request, res: Response) {
+    //     try {
 
-            const status = req.query.status as string | undefined;
-            console.log(status);
-            const user = await UserService.getAllUsers(status);
+    //         const status = req.query.status as string | undefined;
+    //         console.log(status);
+    //         const user = await UserService.getAllUsers(status);
 
 
-            res.json({
-                success: true,
-                data: user
-            });
-        } catch (error: any) {
-            res.status(500).json({
-                success: false,
-                message: error.message,
-            });
-        }
-    }
+    //         res.json({
+    //             success: true,
+    //             data: user
+    //         });
+    //     } catch (error: any) {
+    //         res.status(500).json({
+    //             success: false,
+    //             message: error.message,
+    //         });
+    //     }
+    // }
 
-    static async removeUser(req: Request, res: Response) {
-        try {
-            const id = Number(req.params.id);
-            const user = await UserService.removeUser(id);
+    // descoped admin function
+    // static async removeUser(req: Request, res: Response) {
+    //     try {
+    //         const id = Number(req.params.id);
+    //         const user = await UserService.removeUser(id);
 
-            res.json({
-                success: true,
-                message: "User removed successfully",
-                data: user
-            });
-        } catch (error: any) {
-            res.status(500).json({
-                success: false,
-                message: error.message,
-            });
-        }
-    }
+    //         res.json({
+    //             success: true,
+    //             message: "User removed successfully",
+    //             data: user
+    //         });
+    //     } catch (error: any) {
+    //         res.status(500).json({
+    //             success: false,
+    //             message: error.message,
+    //         });
+    //     }
+    // }
 
     static async getUserProfile(req: AuthRequest, res: Response) {
         try {

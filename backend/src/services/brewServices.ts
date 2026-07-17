@@ -1,8 +1,10 @@
+import { SearchBrewDTO } from '../classes/brewDTO';
 import { BrewRepo } from '../repositories/brewRepo';
 
 export class BrewService {
     static async addBrew(id: number, brew: any) {
-        return await BrewRepo.addBrew(id, brew);
+        const createdBrew = await BrewRepo.addBrew(id, brew);
+        return createdBrew.id;
     }
 
     static async getBrewById(brew: number, user: number) {
@@ -18,6 +20,7 @@ export class BrewService {
     }
 
     static async searchBrews(type: string, query: string) {
-        return await BrewRepo.searchBrews(type, query);
+        const search = await BrewRepo.searchBrews(type, query);
+        return search.map(s => new SearchBrewDTO(s));
     }
 }

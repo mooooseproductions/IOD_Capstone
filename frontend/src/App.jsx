@@ -9,6 +9,7 @@ import { Route, Routes } from 'react-router'
 
 import './App.css'
 import ProtectedRoute from './components/routeProtector'
+import AboutUsPage from './pages/AboutUsPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/brewing" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
         <Route path="/brewing/:brewId" element={<ProtectedRoute><BrewPage /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+        <Route path="/aboutus" element={<AboutUsPage />} />
       </Routes>
     </div>
   )

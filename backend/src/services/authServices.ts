@@ -1,6 +1,7 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 import { AuthRepo } from "../repositories/authRepo";
+import { UserDTO } from "../classes/authDTO";
 
 export class AuthService {
 
@@ -76,7 +77,7 @@ export class AuthService {
         await this.saveRefreshToken(user.id, refreshToken);
 
         return {
-            user: user,
+            user: new UserDTO(user),
             accessToken,
             refreshToken
         };

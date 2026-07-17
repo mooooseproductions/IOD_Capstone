@@ -53,21 +53,23 @@ export class UserRepo {
         return user;
     }
 
-    static async getAllUsers(status?: string) {
-        const users = await prisma.user.findMany({
-            where: status ? { status } : {}
-        });
-        return users;
-    }
+    // descoped admin function for monitoring users
+    // static async getAllUsers(status?: string) {
+    //     const users = await prisma.user.findMany({
+    //         where: status ? { status } : {}
+    //     });
+    //     return users;
+    // }
 
-    static async removeUser(id: number) {
-        await prisma.user.delete({
-            where: {
-                id
-            }
-        });
-        return true;
-    }
+    // descoped admin function
+    // static async removeUser(id: number) {
+    //     await prisma.user.delete({
+    //         where: {
+    //             id
+    //         }
+    //     });
+    //     return true;
+    // }
 
     static async getUserProfile(id: number) {
         return prisma.user.findUnique({

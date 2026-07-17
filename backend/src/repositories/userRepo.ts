@@ -30,7 +30,7 @@ export class UserRepo {
     }
 
     static async updateUser(id: number, update: any) {
-        return await prisma.user.update({
+        await prisma.user.update({
             where: {
                 id,
             },
@@ -42,6 +42,7 @@ export class UserRepo {
                 ...(update.role !== undefined && { role: update.role})
             }
         });
+        return true;
     }
 
     static async getUserDetails(id: number) {

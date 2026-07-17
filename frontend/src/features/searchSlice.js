@@ -25,7 +25,7 @@ export const searchBrews = createAsyncThunk(
 const resetSearch = (state) => {
   state.results = [];
   state.query = "";
-  state.status = "idle";
+  state.searchStatus = "idle";
   state.error = "";
 };
 
@@ -35,10 +35,7 @@ const searchSlice = createSlice({
     searchType: "name",
     query: "",
     results: [],
-    favourites: [],
     searchStatus: "idle",
-    favouritesStatus: "idle",
-    changingFavouriteId: null,
     error: "",
   },
   reducers: {

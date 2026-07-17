@@ -43,7 +43,6 @@ export class UserController {
             res.json({
                 success: true,
                 message: "Details updated successfully",
-                data: user
             });
         } catch (error: any) {
             res.status(500).json({

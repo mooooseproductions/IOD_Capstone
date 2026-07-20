@@ -38,7 +38,7 @@ function ProfilePage() {
 
 
   const { user, brews, status, error } = useSelector((state) => state.profile);
-  const { items:favourites, status:favouritesStatus, changingFavouriteId, error: favouriteError } = useSelector((state) => state.favourites);
+  const { items: favourites, status: favouritesStatus, changingFavouriteId, error: favouriteError } = useSelector((state) => state.favourites);
 
   useEffect(() => {
     if (status === "idle") dispatch(fetchUserProfile());
@@ -89,12 +89,6 @@ function ProfilePage() {
           emptyMessage="You don't currently have any active brews."
         />
 
-        <BrewSection
-          title="Completed Brews"
-          brews={completedBrews}
-          emptyMessage="Completed brews will appear here."
-        />
-
         <section className="brew-list-section mb-5 text-start">
           <div className="section-heading d-flex align-items-center gap-2 mb-3">
             <h2 className="mb-0">Favourites</h2>
@@ -141,6 +135,11 @@ function ProfilePage() {
             </Row>
           )}
         </section>
+        <BrewSection
+          title="Completed Brews"
+          brews={completedBrews}
+          emptyMessage="Completed brews will appear here."
+        />
       </Container>
     </main>
   );

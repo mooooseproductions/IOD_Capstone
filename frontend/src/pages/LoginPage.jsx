@@ -17,8 +17,8 @@ function LoginPage() {
   const { status, error } = useSelector((state) => state.auth);
 
   const [loginDetails, setLoginDetails] = useState({
-    email: "eap@beer.com",
-    password: "123456",
+    email: "",
+    password: "",
   });
 
   const handleChange = (event) => {
